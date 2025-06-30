@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/dashboard-style.css">
+</head>
+<body>
+    <div id="loading-overlay">
+        <div id="loading-spinner"></div>
+    </div>
+    <div class="header-dashboard">
+        <img src="assets/dashboard-icon.png" width="30px" height="30px">
+        <p id="dashboard-name">Dashboard</p>
+        <div class="dashboard-profile">
+            <div id="User-Name"></div>
+            <img src="assets/man.png" width="30px" height="30px">
+        </div>
+    </div>
+    <div class="PersonalDashboard-content">
+        <div class="dashboard-Networth">
+            <div class="total-Networth">
+                <p>Total Net Worth</p>
+                <p>$ 10,000</p>
+            </div>
+            <div class="networth-Tracker">
+                <p>TRACKER</p>
+                <canvas id="investmentPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="dashboard-TopStocks">
+            <p>Top Stocks By Market Cap</p>
+            <table id="top-stocks">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Stock Name</th>
+                        <th>Price($)</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Apple</td>
+                        <td id="apple-price">Price</td>
+                        <td id="apple-change">Change</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Microsoft</td>
+                        <td id="microsoft-price">Price</td>
+                        <td id="microsoft-change">Change</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Amazon</td>
+                        <td id="amazon-price">Price</td>
+                        <td id="amazon-change">Change</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Walmart</td>
+                        <td id="walmart-price">Price</td>
+                        <td id="walmart-change">Change</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>JPMorgan Chase</td>
+                        <td id="jpmorgan-price">Price</td>
+                        <td id="jpmorgan-change">Change</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dashboard-Watchlist">
+            <p>Watchlist</p>
+            <div class="stockInput">
+                <div class="Search">
+                    <input id="stockName" type="text" placeholder="Stock Symbol">
+                </div>
+                <button id="addStockBtn">Add Stock</button>
+            </div>
+            <br>
+            <table id="watchlist">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Price($)</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dashboard-LearnInvesting">
+            <p>Learn Investing</p>
+            <div class="learn-content">
+                <p>Start your journey with these resources:</p>
+                <ul>
+                    <li><a href="#">Introduction to Stock Market</a></li>
+                    <li><a href="#">Mutual Fund Basics</a></li>
+                    <li><a href="#">Portfolio Building Tips</a></li>
+                    <li><a href="#">Risk Management Essentials</a></li>
+                </ul>
+                <button class="btn-explore">Explore More</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, arrayUnion, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWX8jkVbFtAEzXpI-dxDbPk0Fgas1wER4",
+            authDomain: "financial-portal-cd452.firebaseapp.com",
+            projectId: "financial-portal-cd452",
+            storageBucket: "financial-portal-cd452.appspot.com",
+            messagingSenderId: "1017884974802",
+            appId: "1:1017884974802:web:e17b307bfee1d927dd970b",
+            measurementId: "G-K90SQW3QZ6"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+    
+        async function loadUserData(user) {
+            const userId = user.uid;
+            const userDoc = doc(db, "users", userId);
+    
+            try {
+                document.getElementById('loading-overlay').style.display = 'flex';
+                const docSnapshot = await getDoc(userDoc);
+                if (docSnapshot.exists()) {
+                    const userData = docSnapshot.data();
+                    document.getElementById('User-Name').textContent = `${userData.name}`;
+                    document.querySelector('.header-dashboard').style.display = 'flex';
+    
+                    // Load the user's watchlist
+                    loadWatchlist(userData.watchlist);
+                } else {
+                    console.log('No user data found.');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+    
+        async function loadWatchlist(watchlist) {
+            const watchlistTableBody = document.querySelector('#watchlist tbody');
+            watchlistTableBody.innerHTML = ''; // Clear the table before adding items
+    
+            let stockCounter = 1; // Initialize counter for watchlist
+    
+            for (const stockSymbol of watchlist) {
+                const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=hellokey`;
+    
+                try {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+    
+                    if (data['Global Quote']) {
+                        const stockPrice = data['Global Quote']['05. price'];
+                        const priceChange = data['Global Quote']['10. change percent'];
+    
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `<td>${stockCounter++}</td><td>${stockSymbol}</td><td>${stockPrice}</td><td>${priceChange}</td>`;
+                        watchlistTableBody.appendChild(newRow);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching price for ${stockSymbol}:`, error);
+                }
+            }
+        }
+    
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadUserData(user);
+                fetchTopStockPrices();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    
+        async function fetchTopStockPrices() {
+            const stocks = ['AAPL', 'MSFT', 'AMZN', 'WMT', 'JPM'];
+            const stockIds = ['apple-price', 'microsoft-price', 'amazon-price', 'walmart-price', 'jpmorgan-price'];
+            const changeIds = ['apple-change', 'microsoft-change', 'amazon-change', 'walmart-change', 'jpmorgan-change'];
+    
+            try {
+                document.getElementById('loading-overlay').style.display = 'flex'; // Show loading spinner
+                const promises = stocks.map((stock, index) => {
+                    const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock}&apikey=hellokey`;
+                    return fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data['Note']) {
+                                alert(data['Note']);
+                            } else {
+                                const stockPrice = data['Global Quote'] ? data['Global Quote']['05. price'] : null;
+                                const priceChange = data['Global Quote'] ? data['Global Quote']['10. change percent'] : null;
+                                if (stockPrice) {
+                                    document.getElementById(stockIds[index]).textContent = stockPrice;
+                                }
+                                if (priceChange) {
+                                    const changeElement = document.getElementById(changeIds[index]);
+                                    changeElement.textContent = priceChange;
+    
+                                    // Change text color based on price change
+                                    if (parseFloat(priceChange) > 0) {
+                                        changeElement.style.color = 'green';
+                                    } else if (parseFloat(priceChange) < 0) {
+                                        changeElement.style.color = 'red';
+                                    } else {
+                                        changeElement.style.color = 'black'; // No change
+                                    }
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching data for ${stock}:`, error);
+                        });
+                });
+    
+                await Promise.all(promises);
+            } finally {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+        let stockCounter = 1;
+        document.getElementById('addStockBtn').onclick = function() {
+            const stockSymbol = document.getElementById("stockName").value.trim().toUpperCase();
+    
+            if (stockSymbol !== "") {
+                fetchStockPrice(stockSymbol);
+                document.getElementById('stockName').value = "";
+                const user = auth.currentUser;
+                if (user) {
+                    const userId = user.uid;
+                    const userDoc = doc(db, "users", userId);
+                    updateDoc(userDoc, {
+                        watchlist: arrayUnion(stockSymbol)
+                    }).then(() => {
+                        console.log("Stock added to watchlist");
+                    }).catch(error => {
+                        console.error("Error adding stock to watchlist:", error);
+                    });
+                }
+            } else {
+                alert("Please enter a stock symbol.");
+            }
+        };
+    
+        async function fetchStockPrice(stockSymbol) {
+            const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=hellokey`;
+    
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data['Note']) {
+                    alert(data['Note']);
+                    return;
+                }
+    
+                const stockPrice = data['Global Quote'] ? data['Global Quote']['05. price'] : 'N/A';
+                const priceChange = data['Global Quote'] ? data['Global Quote']['10. change percent'] : 'N/A';
+    
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `<td>${stockCounter++}</td><td>${stockSymbol}</td><td>${stockPrice}</td><td>${priceChange}</td>`;
+                document.querySelector('#watchlist tbody').appendChild(newRow);
+    
+            } catch (error) {
+                console.error("Error fetching stock price:", error);
+            }
+        }
+        document.addEventListener("DOMContentLoaded",function() {
+            const ctx=document.getElementById('investmentPieChart').getContext('2d')
+    
+            new Chart(ctx,{
+                type:'bar',
+                data:{
+                    labels:['Property','Stocks','Mutual Funds'],
+                    datasets:[{
+                        data:[3000,5000,2000],
+                        backgroundColor: ['#02C987', '#CE3046', '#491F9A'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/login-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <title>Authentication</title>
+</head>
+
+<body id="registration-signUp">
+    <div class="logo-container">
+        <img src="assets/logo.png" alt="Site Logo" class="logo">
+        <h1 class="site-name">FORTUNE CONTROL</h1>
+    </div>
+    <div id="signUp-container">
+        <div id="loading-overlay">
+            <div id="loading-spinner"></div> 
+        </div>
+        <div id="success-message">Login Successful!</div>
+        <div class="sign-Up">
+            <h2>Sign Up</h2>
+            <hr>
+            <p>Let's Stalk Stocks Together!</p>
+            <form id="sign-up-form">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Enter Email Id" required>
+                <input type="password" id="password" placeholder="Enter Password" required>
+                <input type="submit" id="sign-up-btn" value="Sign Up">
+            </form>
+            <p id="sign-up-or">OR USING</p>
+            <button id="google-btn" onclick="signInWithGoogle()">
+                <img src="assets/google-icon.png" width="30px" height="30px" alt="Sign in with Google account">
+            </button>
+        </div>
+    </div>
+</body>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyBWX8jkVbFtAEzXpI-dxDbPk0Fgas1wER4",
+        authDomain: "financial-portal-cd452.firebaseapp.com",
+        projectId: "financial-portal-cd452",
+        storageBucket: "financial-portal-cd452.appspot.com",
+        messagingSenderId: "1017884974802",
+        appId: "1:1017884974802:web:e17b307bfee1d927dd970b",
+        measurementId: "G-K90SQW3QZ6"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+    
+    document.getElementById("sign-up-form").addEventListener("submit", signUp);
+    
+    async function signUp(event) {
+        event.preventDefault();
+        document.getElementById("loading-overlay").style.display = "block";
+    
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+    
+        if (!name || !email || !password) {
+            alert("Please fill in all fields.");
+            document.getElementById("loading-overlay").style.display = "none";
+            return;
+        }
+    
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                name: name,
+                email: email,
+                watchlist:[]
+            });
+    
+            showSuccessMessage();
+    
+        } catch (error) {
+            alert("Error: " + error.message);
+            console.error("Sign Up Error:", error);
+            document.getElementById("loading-overlay").style.display = "none";
+        }
+    }
+    
+    window.signInWithGoogle = async function() {
+        document.getElementById("loading-overlay").style.display = "block";
+    
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+    
+            await setDoc(doc(db, "users", user.uid), {
+                name: user.displayName,
+                email: user.email,
+                watchlist:[]
+            });
+    
+            showSuccessMessage();
+    
+        } catch (error) {
+            if (error.code === 'auth/popup-closed-by-user') {
+                alert("Sign-in was canceled by the user.");
+            } else {
+                alert("Error during Google sign-in: " + error.message);
+            }
+            console.error("Google Sign-In Error:", error);
+            document.getElementById("loading-overlay").style.display = "none";
+        }
+    };
+    
+    function showSuccessMessage() {
+        document.getElementById("loading-overlay").style.display = "none";
+        document.getElementById("success-message").style.display = "block"; 
+        
+        setTimeout(() => {
+            window.location.href = "index.html"; 
+        }, 1000); 
+    }        
+</script>
+</html>

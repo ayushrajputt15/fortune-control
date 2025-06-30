@@ -1,0 +1,368 @@
+/* General styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+}
+
+/* Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #F8F9FA;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.alert-section button {
+    background-color: #2196F3;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    width: max-content;
+}
+.alert-section button:hover {
+    background-color: #0056B3;
+}
+
+.search-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 100%;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    border-radius: 25px;
+    background-color: #fff;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar {
+    flex: 1;
+    padding: 12px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+    border: none; /* Remove the blue border when focused */
+    outline: none;
+}
+
+.search-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px;
+}
+
+.search-btn:hover .search-icon {
+    transform: scale(1.1);
+}
+
+.search-icon {
+    height: 25px;
+    width: 25px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-icon {
+    height: 40px;
+    width: 40px;
+}
+
+.profile-name {
+    font-size: 16px;
+    color: black;
+}
+.logout-btn {
+    background-color: #F44336;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #D32F2F;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.nav-link {
+    text-decoration: none;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.nav-link:hover {
+    color: #cccccc;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column; /* Stack logo image, web name, and short heading vertically */
+    justify-content: center; /* Vertically center items */
+    align-items: center; /* Horizontally center items */
+    gap: 5px; /* Reduce space between elements */
+    text-align: center; /* Center the text */
+}
+
+.logo img {
+    height: 50px; /* Adjust logo image height */
+    width: auto; /* Maintain aspect ratio */
+}
+
+.web-name {
+    color: #333; /* Darker text color */
+    font-size: 36px; /* Larger font size */
+    font-weight: bold; /* Bold text */
+    font-family: 'Georgia', 'Times New Roman', Times, serif; /* Elegant font */
+    letter-spacing: 1px; /* Slight letter spacing */
+    text-transform: uppercase; /* Uppercase text */
+    line-height: 0.2; /* Proper line spacing */
+    margin-top: 10px; /* Space above the web name */
+    word-wrap: break-word; /* Allow long words to break into the next line */
+    overflow-wrap: break-word; /* Ensure text doesn't overflow */
+    white-space: normal; /* Ensure text is wrapped normally */
+}
+
+.short-heading {
+    color: #777; /* Lighter color for the subheading */
+    font-size: 18px; /* Smaller font size for the heading */
+    font-family: 'Arial', sans-serif; /* Simple, modern sans-serif font */
+    font-weight: normal; /* Less emphasis than the main website name */
+    letter-spacing: 0.5px; /* Subtle letter spacing */
+}
+
+/* Ad Containers */
+.ad-container {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 350px; /* Restrict ad width for better spacing */
+    margin: 0 auto; /* Center content within its parent */
+}
+
+.ad-container h2 {
+    color: #007BFF;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.ad-container p {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.cta-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 14px;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+/* Below Navigation Bar */
+.below_nav {
+    display: flex;
+    justify-content: space-between; /* Align ads to the edges and center logo */
+    align-items: center; /* Vertically center all elements */
+    width: 100%;
+    padding: 10px;
+}
+
+.add {
+    flex: 0 1 auto; /* Ensure ads take only necessary width */
+    margin: 0 10px; /* Add some horizontal spacing */
+    text-align: center; /* Center ad content */
+}
+
+.logo {
+    flex: 0 1 auto; /* Allow the logo to maintain its size without stretching */
+    text-align: center;
+}
+.logo img {
+    height: 150px; /* Adjust the logo image height */
+    width: auto; /* Maintain the aspect ratio */
+}
+
+/* News Section */
+.news-section {
+    margin-top: 20px;
+}
+
+.news-item {
+    border: 2px solid black;
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
+    padding: 15px 0;
+}
+
+.news-item:last-child {
+    border-bottom: none;
+}
+
+.news-item h2 {
+    margin: 0;
+    color: black;
+}
+
+.news-item p {
+    margin: 5px 0;
+    color: black;
+}
+
+time {
+    font-size: 0.9em;
+    color: black;
+}
+
+/* Custom styles for the Top Stock Bar */
+#live-data-bar {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .web-name {
+        font-size: 28px; /* Adjust font size for medium screens */
+        margin-top: 5px; /* Reduce margin for smaller screens */
+        line-height: 1.1; /* Adjust line height for better spacing */
+    }
+
+    .top-nav {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;
+        padding: 15px;
+    }
+
+    /* Search bar adjustments */
+    .search-container {
+        width: 90%; /* Adjust width */
+    }
+
+    .search-bar {
+        font-size: 14px;
+    }
+
+    /* Navbar adjustments */
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .nav-link {
+        margin-bottom: 10px;
+    }
+
+    /* Ad sections adjustments */
+    .below_nav {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+    }
+
+    .add {
+        width: 100%; /* Ads take full width on smaller screens */
+    }
+
+    /* Logo adjustments */
+    .logo img {
+        width: 80%;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Search bar adjustments */
+    .search-container {
+        width: 90%;
+    }
+
+    .search-bar {
+        font-size: 12px; /* Smaller font size */
+    }
+
+    .web-name {
+        font-size: 22px; /* Smaller font size for very small screens */
+        margin-top: 3px; /* Further reduce margin */
+        line-height: 1.2; /* Adjust line height for readability */
+    }
+
+    /* Profile section stacking */
+    .profile-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* News section adjustments */
+    .news-item {
+        padding: 10px 0;
+    }
+
+    /* Ad adjustments */
+    .ad-container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .logo img {
+        width: 100%; /* Logo takes full width on very small screens */
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-link {
+        text-align: center;
+    }
+}

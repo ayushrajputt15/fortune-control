@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/sip-style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>SIP CALCULATOR</title>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <div class="header-sip">
+        <img src="assets/calculator.png" width="30px" height="30px">
+        <p id="sip-name">SIP CALCULATOR</p>
+        <div class="sip-profile">
+            <div id="sip-user-name"></div>
+            <img src="assets/man.png" width="30px" height="30px">
+        </div>
+    </div>
+
+    <!-- Information Section -->
+    <section class="sip-info">
+        <p>The SIP calculator helps estimate the potential growth of your Systematic Investment Plan (SIP) investment over your chosen time frame. SIP is a convenient method to save for your long-term financial goals.</p>
+    </section>
+
+    <!-- Calculator and Chart Section -->
+    <section class="calculator-container">
+        <div class="calculator-form">
+            <h2>Estimate Your SIP Returns</h2>
+            <form id="sip-form">
+                <div class="form-group">
+                    <label for="number">Enter Amount:</label>
+                    <input type="number" id="number" value="5000" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="interest">Expected Return (in %):</label>
+                    <input type="number" id="interest" value="10" min="0">
+                </div>
+                <div class="form-group slider-container">
+                    <label for="time">Time Period (in years):</label>
+                    <input type="range" min="1" max="20" value="5" class="slider" id="yearRange">
+                    <div class="year-label" id="yearLabel">5 Years</div>
+                </div>
+            </form>
+        </div>
+
+        <div class="calculation-results">
+            <h2>Investment Summary</h2>
+            <p>Invested Amount: ₹ <span id="investedAmount">0</span></p>
+            <p>Expected Returns: ₹ <span id="expectedReturn">0</span></p>
+            <p>Total Value: ₹ <span id="totalValue">0</span></p>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="investmentPieChart" width="400" height="400"></canvas>
+        </div>
+    </section>
+
+    <!-- Firebase Authentication -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWX8jkVbFtAEzXpI-dxDbPk0Fgas1wER4",
+            authDomain: "financial-portal-cd452.firebaseapp.com",
+            projectId: "financial-portal-cd452",
+            storageBucket: "financial-portal-cd452.appspot.com",
+            messagingSenderId: "1017884974802",
+            appId: "1:1017884974802:web:e17b307bfee1d927dd970b",
+            measurementId: "G-K90SQW3QZ6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log("User is signed in:", user.email);
+                const userProfile = document.querySelector('#sip-user-name'); // This element will display the user name
+
+                if (user.displayName) {
+                    userProfile.textContent = user.displayName;
+                } else {
+                    try {
+                        const userDoc = doc(db, "users", user.uid);
+                        const userSnapshot = await getDoc(userDoc);
+                        if (userSnapshot.exists()) {
+                            const userData = userSnapshot.data();
+                            userProfile.textContent = userData.name || "User";
+                        } else {
+                            userProfile.textContent = "User";
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        userProfile.textContent = "User";
+                    }
+                }
+            } else {
+                console.log("No user is signed in. Redirecting to login page.");
+                window.location.href = "login.html"; // Redirect to login page if not signed in
+            }
+        });
+
+        // SIP Calculation Script
+        const slider = document.getElementById('yearRange');
+        const amountInput = document.getElementById('number');
+        const interestInput = document.getElementById('interest');
+        const yearLabel = document.getElementById('yearLabel');
+        const expectedReturnsEl = document.getElementById('expectedReturn');
+        const totalValueEl = document.getElementById('totalValue');
+        const investedAmountEl = document.getElementById("investedAmount");
+
+        const ctx = document.getElementById('investmentPieChart').getContext('2d');
+        let pieChart;
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function calculatorSip() {
+            const p = parseFloat(amountInput.value);
+            const r = parseFloat(interestInput.value) / 100 / 12;
+            const n = parseFloat(slider.value) * 12;
+
+            if (p <= 0 || r <= 0 || n <= 0) {
+                investedAmountEl.textContent = "0";
+                expectedReturnsEl.textContent = "0";
+                totalValueEl.textContent = "0";
+                updatePieChart(0, 0);
+                return;
+            }
+
+            const investedAmount = p * n;
+            const A = p * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+            const expectedReturns = A - investedAmount;
+
+            investedAmountEl.textContent = formatNumber(investedAmount.toFixed(2));
+            expectedReturnsEl.textContent = formatNumber(expectedReturns.toFixed(2));
+            totalValueEl.textContent = formatNumber(A.toFixed(2));
+            updatePieChart(investedAmount, expectedReturns);
+        }
+
+        function updatePieChart(investedAmount, expectedReturns) {
+            if (pieChart) {
+                pieChart.destroy(); // Destroy the previous chart instance
+            }
+
+            pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Invested Amount', 'Expected Returns'],
+                    datasets: [{
+                        label: 'Investment Breakdown',
+                        data: [investedAmount, expectedReturns],
+                        backgroundColor: ['rgb(238, 240, 255)', 'rgb(83, 103, 255)'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ": ₹" + formatNumber(tooltipItem.raw.toFixed(2));
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        slider.addEventListener('input', function () {
+            const value = this.value;
+            yearLabel.textContent = value + (value == 1 ? " Year" : " Years");
+            calculatorSip();
+        });
+
+        amountInput.addEventListener('input', calculatorSip);
+        interestInput.addEventListener('input', calculatorSip);
+
+        calculatorSip();
+    </script>
+</body>
+</html>

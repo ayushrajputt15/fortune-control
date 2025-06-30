@@ -1,0 +1,261 @@
+/* General Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Header Styling */
+.header-dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #212529;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-dashboard img {
+    margin-right: 10px;
+}
+
+#dashboard-name {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.dashboard-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Loading Spinner */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+#loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top-color: #212529;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dashboard Content */
+.PersonalDashboard-content {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Net Worth Section */
+.dashboard-Networth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.dashboard-Networth p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.total-Networth p:last-child {
+    font-size: 24px;
+    color: #212529;
+    margin-top: 10px;
+}
+
+.networth-Tracker canvas {
+    max-width: 100%;
+    margin-top: 20px;
+}
+
+/* Top Stocks Section */
+.dashboard-TopStocks {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.dashboard-TopStocks p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.dashboard-TopStocks table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.dashboard-TopStocks th, .dashboard-TopStocks td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.dashboard-TopStocks th {
+    background-color: #212529;
+    color: white;
+}
+
+/* Watchlist Section */
+.dashboard-Watchlist {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.dashboard-Watchlist p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.stockInput {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stockInput input[type="text"] {
+    padding: 10px;
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.stockInput button {
+    padding: 10px 20px;
+    background-color: #212529;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.stockInput button:hover {
+    background-color: black;
+}
+
+.dashboard-Watchlist table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.dashboard-Watchlist th, .dashboard-Watchlist td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.dashboard-Watchlist th {
+    background-color: #212529;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .PersonalDashboard-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-Networth, .dashboard-TopStocks, .dashboard-Watchlist {
+        max-width: 100%;
+    }
+}
+.dashboard-flex-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dashboard-Watchlist, .dashboard-LearnInvesting {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-LearnInvesting p {
+    font-weight: bold;
+}
+
+.learn-content ul {
+    padding-left: 20px;
+}
+
+.learn-content ul li {
+    margin-bottom: 10px;
+}
+
+.learn-content ul li a {
+    text-decoration: none;
+    color: #056ded;
+    font-weight: bold;
+}
+
+.learn-content ul li a:hover {
+    text-decoration: underline;
+}
+
+.btn-explore {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #056ded;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-explore:hover {
+    background-color: #034c9e;
+}

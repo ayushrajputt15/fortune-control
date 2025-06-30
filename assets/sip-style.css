@@ -1,0 +1,149 @@
+/* General Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+} 
+
+/* Header Section */
+.header-sip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #212529;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-sip .logo {
+    display: flex;
+    align-items: center;
+}
+
+.header-sip img {
+    margin-right: 10px;
+}
+#sip-name {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center; /* Centers the text */
+    width: 100%; /* Ensures it takes full width */
+}
+
+
+.sip-profile {
+    display: flex;
+    align-items: center;
+}
+
+#sip-user-name {
+    margin-right: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Info Section */
+.sip-info {
+    padding: 20px 40px;
+    background-color: #fff;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sip-info p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Calculator Section */
+.calculator-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px;
+    gap: 40px;
+}
+
+.calculator-form,
+.calculation-results {
+    width: 48%;
+}
+
+.calculator-form h2,
+.calculation-results h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #777;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.slider {
+    width: 80%;
+}
+
+.year-label {
+    font-size: 16px;
+    color: #555;
+}
+
+.calculation-results p {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.calculation-results p span {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* Chart Section */
+.chart-container {
+    width: 48%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
